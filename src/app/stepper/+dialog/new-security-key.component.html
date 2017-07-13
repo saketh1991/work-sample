@@ -1,0 +1,70 @@
+<div *ngIf="helpExpanded">
+
+  <div layout="row" layout-align="start center" class="pull-bottom-md">
+    <h2 class="md-title pull-top-xs pull-bottom-xs">Security Credentials</h2>
+  </div>
+
+  <div class="md-caption tc-blue-grey-700 help-contents">
+    <md-list>
+      <div layout="column">
+        1. To generate public key from your private key (if you don't have one):
+        <td-highlight lang="bash">
+          {{ sshCommand }}
+        </td-highlight>
+        <button md-mini-fab color="primary"
+                ngxClipboard [cbContent]="sshCommand"
+                (click)="showClipMessage('SSH command')"
+                tooltip-position="after"
+                md-tooltip="Copy to clipboard">
+          <md-icon>content_copy</md-icon>
+        </button>
+      </div>
+      <p>
+        2. Copy the contents of your public key file (e.g: id_rsa.pub) and paste into the appropriate field.
+      </p>
+    </md-list>
+  </div>
+
+  <div layout="row" layout-align="end" class="pad-top-sm">
+    <div class="push-right-sm">
+      <button md-raised-button (click)="closeHelp()" color="primary">CLOSE</button>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="!helpExpanded">
+  <div layout="column" flex>
+    <div layout="row" layout-align="start center" class="pull-bottom-md" flex>
+      <h2 class="md-title pull-top-xs pull-bottom-xs">Add SSH Key Pair</h2>
+      <span flex></span>
+      <a href="http://www.teradata.com/aws/" class="tc-grey-400" target="_blank">
+        <md-icon tooltip-position="before" md-tooltip="More Info and Support" class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+      </a>
+    </div>
+    <h3 class="md-body-1 tc-grey-700">This information is needed to deploy any configuration</h3>
+
+    <div>
+      <button md-button (click)="openHelp()" color="primary">How to generate your public key...</button>
+    </div>
+
+    <form #loginForm="ngForm">
+      <div layout="column">
+        <md-input-container flex-gt-xs>
+          <input mdInput placeholder="Enter your keyname, e.g. My_keyname" type="text" name="name" [(ngModel)]="name" required />
+        </md-input-container>
+        <md-input-container flex-gt-xs>
+          <input mdInput placeholder="Copy Your SSH Key Pair Here" type="text" name="contents" [(ngModel)]="contents" required />
+        </md-input-container>
+        <span flex></span>
+      </div>
+    </form>
+
+    <div layout="row" layout-align="end" class="pad-top-sm">
+      <div class="push-right-sm">
+        <button md-raised-button (click)="close()">CANCEL</button>
+      </div>
+      <button md-raised-button color="accent" (click)="save()" [disabled]="!loginForm.form.valid">ADD KEY</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<td-layout-nav logo="assets:teradata">
+  <div toolbar-content layout="row" layout-align="start center" flex>
+    <span class="text-upper">Nebula</span>
+    <span flex></span>
+    <app-toolbar></app-toolbar>
+  </div>
+
+  <td-layout-manage-list #list
+        [opened]="mediaService.registerQuery('gt-sm') | async"
+        [mode]="(mediaService.registerQuery('gt-sm') | async) ? 'side' : 'over'"
+        sidenavWidth="257px">
+    <md-toolbar td-sidenav-content list-items>
+      <span class="tc-blue-grey-400 md-title">{{title}}</span>
+    </md-toolbar>
+    <md-nav-list td-sidenav-content list-items>
+      <ng-template let-step ngFor [ngForOf]="steps">
+        <a md-list-item [class.active]="step.active"
+                        [class.disabled]="step.disabled"
+                        [routerLink]="step.disabled ? [] : ['/dashboard/' + step.link]">
+          <md-icon class="tc-blue-grey-200">{{step.icon}}</md-icon>
+          {{step.title}}
+        </a>
+      </ng-template>
+    </md-nav-list>
+    <div td-toolbar-content toolbar-buttons layout="row" layout-align="start center" flex>
+      <button md-icon-button [routerLink]="backToLink" *ngIf="canGoBack()">
+        <md-icon>arrow_back</md-icon>
+      </button>
+      <span *ngIf="canGoBack()">Back to {{ backTo }}</span>
+      <span flex></span>
+      <button md-icon-button *ngIf="canGoBack() && !(mediaService.registerQuery('gt-md') | async)" (click)="sideNav.toggle()">
+        <md-icon>receipt</md-icon>
+      </button>
+    </div>
+
+    <md-sidenav-container style="height: 100%" fullscreen>
+      <ng-content></ng-content>
+
+      <md-sidenav
+        #sideNav
+        [mode]="(mediaService.registerQuery('gt-md') | async) ? 'side' : 'over'"
+        [opened]="mediaService.registerQuery('gt-md') | async"
+        [ngClass]="{'bgc-grey-300': (mediaService.registerQuery('gt-md') | async)}"
+        align="end"
+        sidenavWidth="257px"
+        class="summary-sidenav"
+      >
+        <br />
+        <div style="margin-top: -7px">
+          <ng-content select="app-plan-summary"></ng-content>
+        </div>
+      </md-sidenav>
+    </md-sidenav-container>
+  </td-layout-manage-list>
+</td-layout-nav>

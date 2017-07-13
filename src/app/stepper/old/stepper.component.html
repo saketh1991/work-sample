@@ -1,0 +1,313 @@
+<td-layout-nav logo="assets:teradata">
+  <div toolbar-content layout="row" layout-align="start center" flex>
+    <span class="text-upper">Nebula</span>
+    <span flex></span>
+    <app-toolbar></app-toolbar>
+  </div>
+  <td-layout-manage-list #list>
+    <md-toolbar list-items>
+      <span class="tc-blue-grey-400 md-title">Build Plan</span>
+    </md-toolbar>
+     <md-nav-list list-items>
+      <a md-list-item (click)="list.toggle()" class ="active" [routerLink]="['/dashboard/stepper']">
+        <md-icon class="tc-blue-grey-200">looks_one</md-icon>
+        Build Plan
+      </a>
+      <a md-list-item (click)="list.toggle()" [routerLink]="['/dashboard/appverify']">
+        <md-icon class="tc-blue-grey-200">looks_two</md-icon>
+        Verify Applications
+      </a>
+      <a md-list-item (click)="list.toggle()" [routerLink]="['/dashboard/tddbconfig']" >
+        <md-icon class="tc-blue-grey-200">looks_3</md-icon>
+        Start Deployment
+      </a>
+      <a md-list-item (click)="list.toggle()" [routerLink]="['/dashboard/appconfig']">
+        <md-icon class="tc-blue-grey-200">looks_4</md-icon>
+        Configure Applications
+      </a>
+      <a md-list-item (click)="list.toggle()" [routerLink]="['/dashboard/confirm']">
+        <md-icon class="tc-blue-grey-200">looks_5</md-icon>
+        Confirm and Deploy
+      </a>
+    </md-nav-list>
+    <div toolbar-buttons layout="row" layout-align="start center" flex>
+      <span flex="none">
+              <button md-button md-icon-button title="Back" [routerLink]="['/dashboard/tdplans']">
+        <md-icon>arrow_back</md-icon>
+        </button>
+        </span>
+      <span>Build Plan</span>
+      <span flex></span>
+    </div>
+    <div layout="row" layout-align="end start" layout-margin>
+      <md-card tdMediaToggle="gt-xs" [mediaClasses]="['push-sm']" flex="75">
+        <div layout-gt-xs="row">
+          <div flex-gt-xs="70">
+            <div class="pad">
+              <td-steps>
+                <td-step #step label="Template Name" [active]="true" [disabled]="false" [state]="state"
+                         (activated)="activeEvent()" (deactivated)="deactiveEvent()">
+                  <ng-template td-step-label>
+                    <span>Plan Name</span>
+                    <a md-icon-button tooltip-position="after" md-tooltip="Name your plan. Find it later in your Custom Plan"
+                       class="tc-grey-400"><md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon></a>
+                  </ng-template >
+                  <div layout="column">
+                    <md-input-container>
+                      <input mdInput tdAutoTrim class="appname" placeholder="Plan name" [(ngModel)]="appname" required />
+                    </md-input-container>
+                    <md-input-container>
+                      <input mdInput tdAutoTrim class="appname" placeholder="Plan description (Optional)" [(ngModel)]="appdesc" />
+                    </md-input-container>
+                  </div>
+                  <ng-template td-step-actions>
+                    <div layout="row">
+                      <!--<a md-button class = "next" (click) = "loadplan()" >Next</a >-->
+                      <button md-raised-button color="accent" (click)="deactiveEvent()">CONTINUE</button>
+                    </div>
+                  </ng-template>
+
+                  <ng-template td-step-summary>
+                      <ul>
+                        <div>
+                          Name: {{appname}}
+                          </div>
+                        <div>
+                           Describtion: {{appdesc}}
+                          </div>
+                        </ul>
+                  </ng-template>
+                </td-step>
+              <!--Storage Options Radio START -->
+                <td-step md-subhead #app_storage label="Storage And Compute" [active]="false" [disabled]="true" [state]="state"
+                         (activated)="activeStorage()" (deactivated)="deactiveStorage()">
+                    <ng-template td-step-label>
+                    <span>Database Storage and Compute</span>
+                    <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip Msg goes here"
+                       class="tc-grey-400"><md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon></a>
+                  </ng-template >
+                  <md-radio-group [(ngModel)]="storage_Type" layout="row" class="push-bottom-sm" flex="none">
+                    <md-radio-button *ngFor="let t of storage_Types_1" class="md-primary pad-xs" value={{t}}
+                                     (click)="generate_storage(t)">{{t}}
+                    </md-radio-button>
+                  </md-radio-group>
+                  <div layout="column" layout-align="start start" *ngIf="storage_Type != null">
+                    <md-radio-group [(ngModel)]="appstorage" layout="row" class="push-bottom-sm" flex="none">
+                      <md-radio-button *ngFor="let t of storage_types" class="md-primary pad-xs" value={{t}}
+                                       (click)="generate_vol(t)">{{t}}
+                      </md-radio-button>
+                    </md-radio-group>
+                   <div layout="row" layout-align="start start" *ngIf=" appstorage == 'EBS_SSD'">
+                      <md-select *ngIf=" appstorage == 'EBS_SSD'" [(ngModel)]="ebs_storage_type"  (change)="ebs_generate_vol($event.target.value)">
+                        <md-option *ngFor="let t of ebs_storage" [value]="t">{{t}}</md-option>
+                      </md-select>
+                      <h4 class="md-subhead pull-top-xs">TB per node</h4>
+                    </div>
+                  </div>
+                  <div *ngIf="appstorage != null">
+                    <!--Storage Options Radio END -->
+                   <!-- Instance Option Card Start -->
+                    <section>
+                      <div layout-gt-xs="row" layout-margin>
+                        <div flex-gt-xs="35" *ngFor="let d of card_data">
+                          <md-card>
+                            <md-toolbar color="primary" class="bgc-blue-700" flex>
+                              <div layout="row" layout-align="start start">
+                                <md-radio-button value="{{d.instance_type}}" (click)="instance_selector(d)" class="td-white-radio-button"></md-radio-button>
+                                <span class="md-subhead push-right-xm">{{d.instance_type}}</span>
+                                <span flex></span>
+                              </div>
+                            </md-toolbar>
+                            <!--<td-expansion-panel label={{appplan}}>
+                        <td-expansion-summary>-->
+                            <md-list>
+                              <md-list-item>
+                                <md-icon md-list-icon class="">developer_board</md-icon>
+                                <h4  class="md-body-1 push-left-xs" >{{d.vCPU}} vCores</h4>
+                              </md-list-item>
+                              <md-divider></md-divider>
+                              <md-list-item>
+                                <md-icon md-list-icon>memory</md-icon>
+                                <h4 class="md-body-1 push-left-xs">{{d.memory}} GiB</h4>
+                              </md-list-item>
+                              <md-divider></md-divider>
+                              <!--<div *ngIf= "appstorage == 'EBS_SSD'">-->
+                                <md-list-item >
+                                  <md-icon md-list-icon>compare_arrow</md-icon>
+                                  <h4  class="md-body-1 push-left-xs" >{{d.ebs_max_bandwidth}} MB/s</h4>
+                                </md-list-item>
+                              <!--</div>-->
+                              <md-divider></md-divider>
+                              <md-list-item *ngIf=" appstorage != 'EBS_SSD'" >
+                                <md-icon md-list-icon>local_laundry_service</md-icon>
+                                <h4  class="md-body-1 push-left-xs">{{(d.storage.devices * d.storage.size)/1000}} TB</h4>
+                              </md-list-item>
+                            </md-list>
+                          </md-card>
+                        </div>
+                      </div>
+                    </section>
+                    <!-- Instance Option Card END -->
+                    <div layout="column" layout-padding layout-margin flex-gt-xs="75" *ngIf = "this.selected_item">
+                      <p>Node Count</p>
+                      <md-slider #nodecount #nodeCount="ngModel" [(ngModel)]="appvolume" max="{{node_limit.maximum}}" min="{{node_limit.minimum}}" step="1" thumbLabel tick-interval="1"
+                                 value="1" (ngModelChange)="instance_calculator($event,value)" class="appvolume pull-left-xs" flex-gt-xs>
+                      </md-slider>
+                      <md-input-container>
+                        <input mdInput #nodeCount="ngModel" type="number" pattern="[0-9]{1,2}" placeholder="Nodes" [(ngModel)]="appvolume" min="{{node_limit.minimum}}" max="{{node_limit.maximum}}"
+                                (ngModelChange)="instance_calculator($event,value)" class="appvolume" required />
+                        <md-hint>
+                          <span [hidden]="nodeCount.pristine" class="tc-red-600">
+                            <span [hidden]="!nodeCount.errors?.required"></span>
+                            <span [hidden]="!nodeCount.errors?.pattern">Invalid Value not allowed</span>
+                            <span [hidden]="!nodeCount.errors?.min">Min value not allowed</span>
+                            <span [hidden]="!nodeCount.errors?.max">Max value not allowed</span>
+                          </span>
+                        </md-hint>
+                        <md-hint align="end" class="md-body-1 tc-grey-600">Min-Max: 1-{{node_limit.maximum}}</md-hint>
+                      </md-input-container>
+                    </div>
+                  </div>
+                  <ng-template td-step-actions>
+                    <button md-raised-button color="accent" (click)="deactiveStorage()">CONTINUE</button>
+                    <div layout="row">
+                    </div>
+                  </ng-template>
+                  <ng-template td-step-summary>
+                    <ul>
+                      <div> Storage Type: {{storage_Type}}  {{appstorage}}</div>
+                      <div >Node Count: {{appvolume}}</div>
+                      <div>Instance Type: {{selected_instance}}</div>
+                      <div *ngIf="appstorage == 'EBS_SSD'">Storage Selected: {{ebs_storage_type}} TB</div>
+                    </ul>
+                  </ng-template>
+                </td-step>
+                <td-step #app_bundle label="Additional Applications (Included with Teradata Database)" [active]="false" [disabled]="true"
+                         [state]="state"
+                         (activated)="activeAppbundle()" (deactivated)="deactiveAppbundle()">
+                          <ng-template td-step-label>
+                    <span>Additional Applications (Included with Teradata Database)</span>
+                    <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip Msg goes here"
+                       class="tc-grey-400"><md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon></a>
+                  </ng-template >
+                  <div layout="row">
+                    <md-list>
+                      <md-list-item *ngFor="let a of applications">
+                        <md-checkbox  [(ngModel)]="a.checked">
+                          {{ a.name }}
+                        </md-checkbox>
+                      </md-list-item>
+                    </md-list>
+                  </div>
+                  <ng-template td-step-actions>
+                    <button md-raised-button color="accent" (click)="activeFeatures()">CONTINUE</button>
+                  </ng-template>
+                  <ng-template td-step-summary>
+                    <ul *ngFor="let a of applications">
+                      <div *ngIf="a.checked == true">
+                        {{ a.name }}
+                      </div>
+                    </ul>
+                  </ng-template>
+                </td-step>
+                <td-step #app_features label="Additional Applications (Licensed separately)" [active]="false" [disabled]="true" [state]="state"
+                         (activated)="activeFeatures()" (deactivated)="deactiveFeatures()">
+                         <ng-template td-step-label>
+                    <span>Additional Applications (Licensed separately)</span>
+                    <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip Msg goes here"
+                       class="tc-grey-400"><md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon></a>
+                  </ng-template >
+                  <div layout="row">
+                    <md-list>
+                      <md-list-item *ngFor="let a of additional_features">
+                        <md-checkbox [(ngModel)]="a.checked">
+                          {{ a.name }}
+                        </md-checkbox>
+                      </md-list-item>
+                    </md-list>
+                  </div>
+                  <ng-template td-step-actions>
+                  </ng-template>
+                  <ng-template td-step-summary>
+                    <ul *ngFor="let a of additional_features">
+                      <div *ngIf="a.checked == true">
+                        {{ a.name }}
+                      </div>
+                    </ul>
+                  </ng-template>
+                </td-step>
+              </td-steps>
+            </div>
+          </div>
+        </div>
+        <div layout="row" layout-align="start none" layout-margin layout-padding flex-gt-xs>
+       <button md-raised-button color="accent" class="push-left-sm" (click)="next_page()">SAVE AND CONTINUE</button>
+       </div>
+      </md-card>
+      <!-- SUMMARY CART START    <div flex-gt-xs="30" class="md-card-position-fixed">-->
+      <div flex-gt-xs="30" layout-align="column">
+
+        <md-card class="fixed config_info " [hidden]="!appname && appplan=='none'">
+
+          <md-toolbar class="bgc-light-blue-800">
+            <span class="tc-grey-50">{{appname ? appname : 'Plan Name'}}</span>
+          </md-toolbar>
+          <md-card-content [hidden]="appplan=='none'">
+            <md-list>
+              <h3 class=" md-subhead tc-grey-700 pull-top-xs">Database Edition</h3>
+              <h3 class=" md-subhead tc-cyan-600">{{appplan}}</h3>
+              <h2 class="md-subhead tc-cyan-600">{{appvolume}} Nodes of {{selected_instance}}</h2>
+              <md-list-item>
+                <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">local_laundry_service</md-icon>
+                <h4 class="md-body-1"> Storage {{storage_Type}} {{appstorage}}: {{getTotalStorage() ? getTotalStorage(): ''}} TB</h4>
+              </md-list-item>
+              <md-list-item>
+                <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">memory</md-icon>
+                <h4  class="md-body-1 push-left-xs" >CPU: {{total_vcore}} vCPU</h4>
+              </md-list-item>
+              <md-list-item>
+                <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">storage</md-icon>
+                <h4 class="md-body-1 push-left-xs" >Memory: {{total_memory}} GiB</h4>
+              </md-list-item>
+              <!--<div *ngIf=" appstorage == 'EBS_SSD'">-->
+              <md-list-item>
+                <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">settings_ethernet</md-icon>
+                <h4 class="md-body-1 push-left-xs" >Network Performance: {{network_performance}}</h4>
+              </md-list-item>
+              <!--</div>-->
+                <md-list-item *ngIf="storage_Type == 'Network'">
+                  <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">compare_arrow</md-icon>
+                  <h4 class="md-body-1  push-left-xs">Storage Throughput: {{throughput}} MB/s</h4>
+                </md-list-item>
+              <!--</div>-->
+            </md-list>
+          </md-card-content>
+          <md-toolbar class="bgc-light-blue-800" flex>
+            <span class="tc-grey-50">Additional Applications</span>
+          </md-toolbar>
+          <md-card-subtitle >
+            <h3 class="md-subhead pull-bottom-lg">Included with Teradata Database</h3>
+          </md-card-subtitle>
+          <md-card-content>
+            <md-list-item *ngFor="let a of applications">
+              <div class="tc-cyan-600 md-body-1" *ngIf="a.checked == true" pad>
+                {{ a.name }}
+              </div>
+            </md-list-item>
+          </md-card-content>
+          <md-divider></md-divider>
+          <md-card-subtitle>
+            <h3 class="md-subhead pull-bottom-lg">Licensed Separately</h3>
+          </md-card-subtitle>
+          <md-card-content>
+            <md-list-item *ngFor="let a of additional_features">
+              <div class="tc-cyan-600 md-body-1" *ngIf="a.checked == true">
+                {{ a.name }}
+              </div>
+            </md-list-item>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+  </td-layout-manage-list>
+</td-layout-nav>

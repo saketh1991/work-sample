@@ -1,0 +1,53 @@
+{
+  "deployment_bundle": [
+    {
+      "subnets": [
+        {
+          "name": "tdmc-private0"
+        },
+        {
+          "name": "tdmc-private1"
+        },
+        {
+          "name": "tdmc-public"
+        }
+      ],
+      "vpc": "vpc-67856e03",
+      "availability_zone": "us-west-2a",
+      "system_time_zone": "us pacific",
+      "instances": {
+        "count": 2,
+        "ami": "ami-2f2ffb4f",
+        "userdata": "",
+        "subnet": "tdmc-public",
+        "placement_group": "",
+        "type": "d2.xlarge",
+        "storage": "HDD",
+        "core": 4,
+        "memory": 30.5
+      },
+      "volumes": {
+        "count": 0,
+        "internal": false,
+        "type": "hdd",
+        "size": 12
+      },
+      "security_group": "sg-c576caa2",
+      "configuration": {
+        "system_name": "tdmc-tddbs",
+        "dbc_password": "dbc"
+      },
+      "plan": {
+        "properties": {
+          "plan_name": "Basic",
+          "plan_id": "tdplan_00000001",
+          "provider": "aws",
+          "app_names": [
+            "tdmc-tddbs",
+            "Viewpoint Software"
+          ]
+        }
+      }
+    }
+  ]
+}

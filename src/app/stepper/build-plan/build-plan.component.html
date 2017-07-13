@@ -1,0 +1,301 @@
+<app-steps-layout title="Build Plan" backTo="Products" [backToLink]="['/dashboard/tdplans']">
+  <app-plan-summary [plan]="plan"></app-plan-summary>
+  <div layout="column" flex="100" layout-margin>
+    <md-card tdMediaToggle="gt-xs" [mediaClasses]="['push-sm']">
+      <md-card-content class="md-padding" *ngIf="isLoading()">
+        <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl">
+          <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+        </div>
+      </md-card-content>
+
+      <md-card-content id="build-plan" class="md-padding" *ngIf="!isLoading()">
+        <td-steps tdStepTracker="build-plan">
+          <td-step #step1
+                   label="Plan Name">
+
+            <ng-template td-step-label>
+              <span>Plan Name</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='103');" [md-tooltip]= tooltip_display  class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <form #planNameForm="ngForm">
+              <div layout="column">
+                <md-input-container>
+                  <input mdInput id="plan-name-input" #planNameElement #planNameControl="ngModel" [(ngModel)]="plan.name" tdAutoTrim
+                          name="plan-name" type="text" placeholder="Plan Name" required
+                          minlength="0" maxlength="24" />
+                  <md-hint align="end">{{planNameElement.value.length}} / 24</md-hint>
+                </md-input-container>
+
+                <md-input-container>
+                  <input mdInput  #planDescriptionElement #planDescriptionControl="ngModel" [(ngModel)]="plan.description" tdAutoTrim
+                          name="plan-description" type="text" placeholder="Plan Description"
+                          minlength="0" maxlength="140" />
+                  <md-hint align="end">{{planDescriptionElement.value.length}} / 140</md-hint>
+                </md-input-container>
+              </div>
+            </form>
+
+            <ng-template td-step-actions>
+              <button id="step1-continue-button" md-button color="accent" [disabled]="!planNameForm.valid" (click)="validatePlanName()" class="text-upper">Continue</button>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <div flex layout-gt-xs="row" layout-align="start center">
+                <span flex="30" class="md-subhead"><span hide-xs>Plan Name</span></span>
+                <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                <span flex class="word-break">{{plan.name}}</span>
+              </div>
+
+              <div flex layout-gt-xs="row" layout-align="start center">
+                <span flex="30" class="md-subhead"><span hide-xs>Plan Description</span></span>
+                <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                <span flex class="word-break">{{plan.description}}</span>
+              </div>
+            </ng-template>
+          </td-step>
+
+          <td-step #step2 label="Database Storage and Compute" [disabled]="isStepPending(step1)">
+            <ng-template td-step-label>
+              <span>Database Storage and Compute</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='104');" [md-tooltip]= tooltip_display  class="tc-grey-400">
+              <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <form #storageAndComputeForm="ngForm">
+              <md-radio-group id="storage-type" [(ngModel)]="plan.storageType" name="storage-type" required layout="row" class="push-bottom-sm" flex="none" (change)="onStorageTypeChange($event.value)">
+                <md-radio-button *ngFor="let s of availableStorageTypes" class="md-primary pad-xs" [value]="s">
+                  {{s.type}}
+                </md-radio-button>
+              </md-radio-group>
+
+              <div layout="column" layout-align="start start" *ngIf="plan.storageType">
+                <md-radio-group id="storage-media" [(ngModel)]="plan.storageMedia" name="storage-option" required layout="row" class="push-bottom-sm" flex="none">
+                  <md-radio-button *ngFor="let sizing of plan.storageType.sizings" class="md-primary pad-xs" [value]="sizing">
+                    {{sizing.type}}
+                  </md-radio-button>
+                </md-radio-group>
+
+                <div class="md-input-wrapper pad-right-md pad-top-md" *ngIf="plan.storageType.sizes">
+                  <md-select [(ngModel)]="plan.storageSize" name="storage-size" placeholder="Storage" required>
+                    <md-option [value]="undefined" selected>Select storage</md-option>
+                    <md-option *ngFor="let size of plan.storageType.sizes" [value]="size">
+                      {{size}}
+                    </md-option>
+                  </md-select>
+                  <label>TB per node <span class="md-placeholder-required">*</span></label>
+                </div>
+
+                <div class="md-input-wrapper pad-right-md" *ngIf="plan.storageType.sizes">
+                  <h2 class="md-body-1">
+                    <span>Encryption</span>
+                  </h2>
+
+                  <md-radio-group id="encryption" name="encryption" [(ngModel)]="plan.storageEncryption" layout="row" class="push-bottom-sm" flex="none">
+                    <md-radio-button class="md-primary pad-xs text-upper" value="True">
+                      Yes
+                    </md-radio-button>
+                    <md-radio-button class="md-primary pad-xs text-upper" value="False">
+                      No
+                    </md-radio-button>
+                  </md-radio-group>
+                </div>
+              </div>
+
+              <div *ngIf="(!plan.storageType?.sizes && plan.storageMedia) || (plan.storageType?.sizes && plan.storageSize)">
+                <section>
+                  <md-radio-group id="instance-type" [(ngModel)]="plan.instanceType" name="instace-type" required layout="row" class="push-bottom-sm" flex="none">
+                    <div flex-gt-xs="35" *ngFor="let i of plan.storageMedia.instances">
+                      <md-card>
+                        <md-toolbar color="primary" class="bgc-blue-700" flex>
+                          <div layout="row" layout-align="start start">
+                            <md-radio-button [value]="i" class="td-white-radio-button">
+                              <span class="md-subhead push-right-xm">{{i.type}}</span>
+                            </md-radio-button>
+                            <span flex></span>
+                          </div>
+                        </md-toolbar>
+                        <md-list>
+                          <md-list-item *ngIf="i.details.storage">
+                            <md-icon class="tc-blue-grey-400" md-list-icon>local_laundry_service</md-icon>
+                            <h4 class="md-body-1 push-left-xs">{{(i.details.storage.devices * i.details.storage.size)/1000}} TB</h4>
+                          </md-list-item>
+                          <md-divider></md-divider>
+                            <md-list-item>
+                            <md-icon class="tc-blue-grey-400" md-list-icon>developer_board</md-icon>
+                            <h4 class="md-body-1 push-left-xs" >{{i.details.vCPU}} vCPU</h4>
+                          </md-list-item>
+                          <md-divider></md-divider>
+                           <md-list-item>
+                            <md-icon class="tc-blue-grey-400" md-list-icon>memory</md-icon>
+                            <h4 class="md-body-1 push-left-xs">{{i.details.memory}} GiB</h4>
+                          </md-list-item>
+                          <md-divider></md-divider>
+                          <md-list-item>
+                            <md-icon class="tc-blue-grey-400" md-list-icon>swap_horiz</md-icon>
+                            <h4 class="md-body-1 push-left-xs " >{{i.networkPerfomance}}</h4>
+                          </md-list-item>
+                          <md-divider *ngIf="plan.storageType.sizes"></md-divider>
+                          <md-list-item *ngIf="plan.storageType.sizes">
+                            <md-icon class="tc-blue-grey-400" md-list-icon>compare_arrow</md-icon>
+                            <h4 class="md-body-1 push-left-xs " >{{i.storageThroughput}} GB</h4>
+                          </md-list-item>
+                        </md-list>
+                      </md-card>
+                    </div>
+                  </md-radio-group>
+                </section>
+
+                <div layout="column" layout-padding layout-margin flex-gt-xs="70" *ngIf="plan.instanceType">
+                  <p>Node Count</p>
+
+                  <md-slider [(ngModel)]="plan.nodeCount"
+                             max="{{plan.maxNodes}}"
+                             min="{{plan.minNodes}}"
+                             name="node-slider"
+                             step="1"
+                             thumbLabel
+                             tick-interval="1"
+                             value="1">
+                  </md-slider>
+
+                  <md-input-container>
+                    <input mdInput #nodesInput
+                              [(ngModel)]="plan.nodeCount"
+                              [minLength]="plan.minNodes"
+                              [maxLength]="plan.maxNodes"
+                              name="nodes"
+                              type="number"
+                              pattern="[0-9]{1,2}"
+                              placeholder="Nodes"
+                              (click)="plan.preventHigherInputArrow()"
+                              (keyup)="plan.preventHigherInputArrow()"
+                              required />
+                    <md-hint>
+                      <span [hidden]="nodesInput.pristine" class="tc-red-600">
+                        <span [hidden]="!nodesInput.errors?.required"></span>
+                        <span [hidden]="!nodesInput.errors?.pattern">Invalid Value not allowed</span>
+                        <span [hidden]="!nodesInput.errors?.min">Min value not allowed</span>
+                        <span [hidden]="!nodesInput.errors?.max">Max value not allowed</span>
+                      </span>
+                    </md-hint>
+
+                    <md-hint align="end" class="md-body-1 tc-grey-600">Min-Max: {{plan.minNodes}}-{{plan.maxNodes}}</md-hint> 
+                  </md-input-container>
+
+                  <pre>{{ nodeCount }}</pre>
+                </div>
+              </div>
+            </form>
+
+            <ng-template td-step-actions>
+              <button  id="step2-continue-button" md-button color="accent" [disabled]="!plan.isStorageAndComputeValid()" (click)="validateStorageAndCompute()" class="text-upper">Continue</button>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary
+                [labels]="['Storage Type', 'Instance Type', 'vCores', 'Memory', 'Network Performance', 'Storage', 'Encryption', 'Node Count']"
+                [values]="[storageTypeDescription, plan.instanceTypeName, instanceTypeVCPUDescription, instanceMemoryDescription, instanceNetworkPerformanceDescription, instanceStorageDescription, encryptionDescription, plan.nodeCount]">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #step3 [disabled]="isStepPending(step2)"
+                    label="Additional Applications (Included with Teradata Database)">
+            <form #additionalForm="ngForm">
+              <ng-template td-step-label>
+                <span>Additional Applications (Included with Teradata Database)</span>
+                <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='105');" [md-tooltip]= tooltip_display class="tc-grey-400">
+                  <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+                </a>
+              </ng-template>
+              <ng-template let-application ngFor [ngForOf]="plan.includedApplications">
+                <div class="pad-top">
+                  <md-checkbox [(ngModel)]="application.selected" name="additional-applications-{{index}}">{{ application.name }}</md-checkbox>
+                </div>
+                <app-instance-selector [(type)]="plan.appConfig.dsu.instances.type"
+                                       [instanceOptions]="dataStream"
+                                       *ngIf="application.type == 'dsu' && appSelected('dsu')">
+                </app-instance-selector>
+              </ng-template>
+            </form>
+            <ng-template td-step-actions>
+              <button  id="step3-continue-button" md-button color="accent" (click)="validateIncludedApplications()" class="text-upper">Continue</button>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <div flex layout-gt-xs="row" layout-align="start center">
+                <md-list flex *ngIf="plan.selectedIncludedApplications.length">
+                  <ng-template let-application ngFor [ngForOf]="plan.selectedIncludedApplications">
+                    <md-divider></md-divider>
+                    <md-list-item>{{application.name}}</md-list-item>
+                  </ng-template>
+                </md-list>
+              </div>
+            </ng-template>
+          </td-step>
+
+          <td-step #step4 [disabled]="isStepPending(step3)"
+                   label="Additional Applications (Licensed separately)">
+            <form #extraForm="ngForm">
+            <ng-template td-step-label>
+              <span>Additional Applications (Licensed separately)</span>
+              <a md-icon-button tooltip-position="after"(click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='106');"  [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <md-list>
+              <md-list-item *ngFor="let application of plan.extraApplications">
+                <md-checkbox name="extra-applications" [(ngModel)]="application.selected">{{ application.name }}</md-checkbox>
+              </md-list-item>
+            </md-list>
+            </form>
+
+            <app-instance-selector [(type)]="plan.appConfig.datamover.instances.type"
+                                   [(nodes)]="plan.appConfig.datamover.instances.count"
+                                   [instanceOptions]="dataMover"
+                                   *ngIf="dataMover && appSelected('datamover')">
+            </app-instance-selector>
+
+            <ng-template td-step-actions>
+              <button md-button color="accent" (click)="validateExtraApplications()" class="text-upper">Continue</button>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <div flex layout-gt-xs="row" layout-align="start center">
+                <md-list flex *ngIf="plan.selectedExtraApplications.length">
+                  <ng-template let-application ngFor [ngForOf]="plan.selectedExtraApplications">
+                    <div flex layout-gt-xs="row" layout-align="start center">
+                      <span flex="30" class="md-subhead"><span hide-xs>Application Selected</span></span>
+                      <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                      <span flex class="word-break">{{application.name}}</span>
+                    </div>
+                    <div flex layout-gt-xs="row" layout-align="start center">
+                      <span flex="30" class="md-subhead"><span hide-xs>Instance Type</span></span>
+                      <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                      <span flex class="word-break">{{plan.appConfig.datamover.instances.type}}</span>
+                    </div>
+                    <div flex layout-gt-xs="row" layout-align="start center">
+                      <span flex="30" class="md-subhead"><span hide-xs>Node Count</span></span>
+                      <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                      <span flex class="word-break">{{plan.appConfig.datamover.instances.count}}</span>
+                    </div>
+                  </ng-template>
+                </md-list>
+              </div>
+            </ng-template>
+          </td-step>
+        </td-steps>
+      </md-card-content>
+      <md-divider></md-divider>
+      <md-card-actions layout="row" *ngIf="!isLoading()">
+        <button  id="step4-continue-button" md-raised-button color="accent" [disabled]="!plan.isValid()" (click)="saveAndContinue()" class="text-upper">Save and Continue</button>
+      </md-card-actions>
+    </md-card>
+  </div>
+</app-steps-layout>
+
+

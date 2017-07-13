@@ -1,0 +1,67 @@
+<script src="plan-summary.component.ts"></script>
+<div layout-align="column" *ngIf="plan">
+  <md-card class="config_info">
+    <md-toolbar class="bgc-light-blue-800">
+      <span class="tc-grey-50" id="build-plan-name">{{plan.name ? plan.name : 'Plan Name'}}</span>
+    </md-toolbar>
+    <md-card-content *ngIf="plan.bundle">
+      <md-list>
+        <h3 class=" md-subhead tc-grey-700 pull-top-xs">Database Edition</h3>
+        <h3 class=" md-subhead tc-cyan-600" id="build-plan-bundle-name">{{plan.bundleName}}</h3>
+        <h2 class="md-subhead tc-cyan-600" *ngIf="plan.instanceTypeName && plan.nodeCount" id="node-count">
+          {{plan.nodeCount}} nodes of {{plan.instanceTypeName}}
+        </h2>
+        <md-list-item *ngIf="plan.instanceTypeName && plan.nodeCount">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">local_laundry_service</md-icon>
+          <h4 class="md-subhead" id="build-plan-storage-type">{{plan.storageTypeName}} {{plan.storageMediaName}}: {{plan.totalStorage}} TB</h4>
+        </md-list-item>
+        <md-list-item *ngIf="plan.instanceTypeName && plan.nodeCount">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">developer_board</md-icon>
+          <h4 class="md-subhead push-left-xs" id="build-plan-cpu">CPU: {{plan.totalVCore}} vCPU</h4>
+        </md-list-item>
+        <md-list-item *ngIf="plan.instanceTypeName && plan.nodeCount">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">memory</md-icon>
+          <h4 class="md-subhead push-left-xs" id="build-plan-memory">Memory: {{plan.totalMemory}} GiB</h4>
+        </md-list-item>
+        <md-list-item *ngIf="plan.instanceTypeName && plan.storageTypeName === 'Local'">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">settings_ethernet</md-icon>
+          <h4 class="md-subhead push-left-xs" id="build-plan-network">Network Performace: {{plan.networkPerformance}}</h4>
+        </md-list-item>
+        <md-list-item *ngIf="plan.instanceTypeName && plan.throughput">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">swap_horiz</md-icon>
+          <h4 class="md-subhead  push-left-xs" id="build-plan-throughput"> Storage Throughput: {{plan.storageThroughput}} GB</h4>
+        </md-list-item>
+      </md-list>
+    </md-card-content>
+    <md-toolbar class="bgc-light-blue-800" flex>
+      <span class="tc-grey-50">Additional Applications</span>
+    </md-toolbar>
+    <md-card-subtitle>
+      <h3 class="md-subhead pull-bottom-lg">Included with Teradata Database</h3>
+    </md-card-subtitle>
+    <md-card-content>
+      <md-list-item class="tc-blue-grey-400" *ngIf="!plan.selectedIncludedApplications.length">
+        No applications selected.
+      </md-list-item>
+      <md-list-item *ngFor="let application of plan.selectedIncludedApplications">
+        <div class="tc-cyan-600 md-body-1 selected-included-application" pad>
+          {{ application.name }}
+        </div>
+      </md-list-item>
+    </md-card-content>
+    <md-divider></md-divider>
+    <md-card-subtitle>
+      <h3 class="md-subhead pull-bottom-lg">Licensed Separately</h3>
+    </md-card-subtitle>
+    <md-card-content>
+      <md-list-item class="tc-blue-grey-400" *ngIf="!plan.selectedExtraApplications.length">
+        No applications selected.
+      </md-list-item>
+      <md-list-item *ngFor="let application of plan.selectedExtraApplications">
+        <div class="tc-cyan-600 md-body-1 selected-extra-application">
+          {{ application.name }}
+        </div>
+      </md-list-item>
+    </md-card-content>
+  </md-card>
+</div>

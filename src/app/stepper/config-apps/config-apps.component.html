@@ -1,0 +1,348 @@
+<app-steps-layout title="Configure Applications" backTo="Configure Deployment" [backToLink]="['/dashboard/tddbconfig']">
+  <app-plan-summary [plan]="plan"></app-plan-summary>
+  <div class="md-content" class="inset" layout="column" flex="100">
+    <md-card class="dashboard_content" flex="100">
+      <md-card-content class="md-padding" *ngIf="isLoading()">
+        <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl">
+          <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+        </div>
+      </md-card-content>
+
+      <md-card-content *ngIf="!isLoading()">
+        <td-steps tdStepTracker="config-apps">
+          <td-step #step1 label="Database">
+            <ng-template td-step-label>
+              <span>Database</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='117');"  [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <form #dbForm="ngForm" class="push-bottom">
+              <div layout="column" flex-gt-xs td-step-content>
+                <app-input-field
+                    [value]="dbConfig.nickname"
+                    (changed)="fieldChanged($event, dbConfig, 'nickname')"
+                    type="text"
+                    placeholder="Nickname"
+                    [minlength]="dbConfig.nicknameMinLength"
+                    [maxlength]="dbConfig.nicknameMaxLength"
+                    [pattern]="dbConfig.nicknamePattern">
+                </app-input-field>
+
+                <app-input-field
+                    [value]="dbConfig.systemName"
+                    (changed)="fieldChanged($event, dbConfig, 'systemName')"
+                    type="text"
+                    placeholder="System Name"
+                    [minlength]="dbConfig.systemNameMinLength"
+                    [maxlength]="dbConfig.systemNameMaxLength"
+                    [pattern]="dbConfig.systemNamePattern">
+                </app-input-field>
+
+                <app-input-field
+                    [value]="dbConfig.password"
+                    [verification]="dbConfig.passwordVerification"
+                    placeholder="Database Password"
+                    minlength="8"
+                    (changed)="dbPasswordChanged($event)">
+                </app-input-field>
+
+                <h2 class="md-body-1">
+                  <span>Database Encryption</span>
+                  <a md-icon-button tooltip-position="after" (mouseover)="stopPropagation(id='121');"  [md-tooltip]=tooltip_display class="tc-grey-400">
+                    <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+                  </a>
+                </h2>
+
+                <md-radio-group name="encryption" [(ngModel)]="dbConfig.encryption" layout="row" class="push-bottom-sm" flex="none">
+                  <md-radio-button class="md-primary pad-xs text-upper" value="True">
+                    Yes
+                  </md-radio-button>
+                  <md-radio-button class="md-primary pad-xs text-upper" value="False">
+                    No
+                  </md-radio-button>
+                </md-radio-group>
+
+                <h2 class="md-body-1">
+                  <span>Kanji Support</span>
+                  <a md-icon-button tooltip-position="after" (mouseover)="stopPropagation(id='121');" [md-tooltip]=tooltip_display class="tc-grey-400">
+                    <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+                  </a>
+                </h2>
+
+                <md-radio-group name="kanjiSupport" [(ngModel)]="dbConfig.kanjiSupport" layout="row" class="push-bottom-sm" flex="none">
+                  <md-radio-button class="md-primary pad-xs text-upper" value="yes">
+                    yes
+                  </md-radio-button>
+                  <md-radio-button class="md-primary pad-xs text-upper" value="no">
+                    no
+                  </md-radio-button>
+                </md-radio-group>
+
+                <div layout="column" flex-gt-xs>
+                  <h2 class="md-body-1"><span>Time Zone</span>
+                    <a md-icon-button tooltip-position="after" (mouseover)="stopPropagation(id='122');"  [md-tooltip]=tooltip_display class="tc-grey-400">
+                      <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+                    </a>
+                  </h2>
+
+                  <md-select name="timezone" [(ngModel)]="dbConfig.timezone">
+                    <md-option *ngFor="let t of timezones" [value]="t">{{t}}</md-option>
+                  </md-select>
+                </div>
+              </div>
+            </form>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        (click)="continue(step1, step2)"
+                        [disabled]="!this.isDbConfigValid()"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary
+                [labels]="['Database Nick Name', 'System Name', 'Kanji Support', 'Time Zone', 'Password']"
+                [values]="[dbConfig.nickname, dbConfig.systemName, dbConfig.kanjiSupport, dbConfig.timezone, 'Set']">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #vp label="View Point" *ngIf="hasApp('vp')" [disabled]="previousStepPending(vp)">
+            <ng-template td-step-label>
+              <span>Viewpoint</span>
+              <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div td-step-content>
+              <a class="tc-blue-grey-400 md-subhead push-bottom-md">
+                No configuration is required
+              </a>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        (click)="continue(vp)"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <a class="tc-blue-grey-400 md-subhead">
+                No configuration is required
+              </a>
+            </ng-template>
+          </td-step>
+
+          <td-step #cmic label="Server Management" *ngIf="hasApp('cmic')" [disabled]="previousStepPending(cmic)">
+            <ng-template td-step-label>
+              <span>Server Management</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation();" md-tooltip="" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <form #smForm="ngForm" class="push-bottom">
+              <div layout="column" flex-gt-xs td-step-content>
+                <app-input-field
+                    [value]="serverManagementConfig.siteId"
+                    [minlength]="serverManagementConfig.siteIdMinLength"
+                    [maxlength]="serverManagementConfig.siteIdMaxLength"
+                    [pattern]="serverManagementConfig.siteIdPattern"
+                    type="text"
+                    placeholder="Site ID Name"
+                    (changed)="smSiteIdChanged($event)">
+                </app-input-field>
+
+                <app-input-field
+                    [value]="serverManagementConfig.restPassword"
+                    [verification]="serverManagementConfig.restPasswordVerification"
+                    [minlength]="serverManagementConfig.restPasswordMinLength"
+                    [maxlength]="serverManagementConfig.restPasswordMaxLength"
+                    [pattern]="serverManagementConfig.restPasswordPattern"
+                    placeholder="Server Management REST Password"
+                    (changed)="smRestPasswordChanged($event)">
+                </app-input-field>
+
+                <app-input-field
+                    [value]="serverManagementConfig.password"
+                    [verification]="serverManagementConfig.passwordVerification"
+                    [minlength]="serverManagementConfig.passwordMinLength"
+                    [maxlength]="serverManagementConfig.passwordMaxLength"
+                    [pattern]="serverManagementConfig.passwordPattern"
+                    placeholder="Server Management Password"
+                    (changed)="smPasswordChanged($event)">
+
+                </app-input-field>
+              </div>
+            </form>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        (click)="continue(cmic)"
+                        [disabled]="!isServerManagementValid()"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary
+                [labels]="['Site Management ID', 'REST Password', 'Password']" [values]="[serverManagementConfig.siteId, 'Set', 'Set']">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #rest label="REST Services" *ngIf="hasApp('rest')" [disabled]="previousStepPending(rest)">
+            <ng-template td-step-label>
+              <span>REST Services</span>
+              <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div td-step-content>
+              <a class="tc-blue-grey-400 md-subhead push-bottom-md">
+                No configuration is required
+              </a>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        (click)="continue(rest)"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <a class="tc-blue-grey-400 md-subhead">
+                No configuration is required
+              </a>
+            </ng-template>
+          </td-step>
+
+          <td-step #dsu label="Data Stream Controller" *ngIf="hasApp('dsu')" [disabled]="previousStepPending(dsu)">
+            <ng-template td-step-label>
+              <span>Data Stream Controller</span>
+              <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div layout="column" td-step-content>
+              <app-input-field
+                  [value]="dscConfig.password"
+                  [verification]="dscConfig.passwordVerification"
+                  [minlength]="dscConfig.passwordMinLength"
+                  [maxlength]="dscConfig.passwordMaxLength"
+                  placeholder="DSC Repository Password"
+                  (changed)="dscPasswordChanged($event)">
+              </app-input-field>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        [disabled]="!isDSCValid()"
+                        (click)="continue(dsu)"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary
+                [labels]="['Password']" [values]="['Set']">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #em label="Ecosystem Manager" *ngIf="hasApp('em')" [disabled]="previousStepPending(em)">
+            <ng-template td-step-label>
+              <span>Ecosystem Manager</span>
+              <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div td-step-content>
+              <a class="tc-blue-grey-400 md-subhead push-bottom-md">
+                No configuration is required
+              </a>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        (click)="continue(em)"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <a class="tc-blue-grey-400 md-subhead">
+                No configuration is required
+              </a>
+            </ng-template>
+          </td-step>
+
+          <td-step #datamover label="Data Mover" *ngIf="hasApp('datamover')" [disabled]="previousStepPending(datamover)">
+            <ng-template td-step-label>
+              <span>Data Mover</span>
+              <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <div layout="column" flex-gt-xs td-step-content>
+              <app-input-field
+                  [value]="dataMoverConfig.password"
+                  [verification]="dataMoverConfig.passwordVerification"
+                  [minlength]="dataMoverConfig.passwordMinLength"
+                  [maxlength]="dataMoverConfig.passwordMaxLength"
+                  [pattern]="dataMoverConfig.passwordPattern"
+                  placeholder="Data Mover Password"
+                  (changed)="dmPasswordChanged($event)">
+              </app-input-field>
+
+              <app-input-field
+                  [value]="dataMoverConfig.repositoryPassword"
+                  [verification]="dataMoverConfig.repositoryPasswordVerification"
+                  [minlength]="dataMoverConfig.repositoryPasswordMinLength"
+                  [maxlength]="dataMoverConfig.repositoryPasswordMaxLength"
+                  [pattern]="dataMoverConfig.repositoryPasswordPattern"
+                  placeholder="Data Mover Repository Password"
+                  (changed)="dmRepositoryPasswordChanged($event)">
+              </app-input-field>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent"
+                        [disabled]="!isDataMoverValid()"
+                        (click)="continue(datamover)"
+                        class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary
+                [labels]="['Password', 'Repository Password']"
+                [values]="['Set', 'Set']">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+        </td-steps>
+      </md-card-content>
+      <md-divider></md-divider>
+      <md-card-actions layout="row" *ngIf="!isLoading()">
+        <button md-raised-button color="accent" [disabled]="!isValid()" (click)="saveAndContinue()" class="text-upper">
+          {{saveButtonLabel}}
+        </button>
+      </md-card-actions>
+    </md-card>
+  </div>
+</app-steps-layout>

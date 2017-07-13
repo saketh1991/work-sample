@@ -1,0 +1,98 @@
+{
+  "HDD": {
+    "d2.2xlarge": {
+      "InstanceType": "d2.2xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 6,
+      "VolumeSize": [
+        2000
+      ]
+    },
+    "d2.4xlarge": {
+      "InstanceType": "d2.4xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 12,
+      "VolumeSize": [
+        2000
+      ]
+    },
+    "d2.8xlarge": {
+      "InstanceType": "d2.8xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 24,
+      "VolumeSize": [
+        2000
+      ]
+    },
+    "d2.xlarge": {
+      "InstanceType": "d2.xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 3,
+      "VolumeSize": [
+        2000
+      ]
+    }
+  },
+  "SSD": {
+    "i2.2xlarge": {
+      "InstanceType": "i2.2xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 2,
+      "VolumeSize": [
+        800
+      ]
+    },
+    "i2.4xlarge": {
+      "InstanceType": "i2.4xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 4,
+      "VolumeSize": [
+        800
+      ]
+    },
+    "i2.8xlarge": {
+      "InstanceType": "i2.8xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 8,
+      "VolumeSize": [
+        800
+      ]
+    },
+    "i2.xlarge": {
+      "InstanceType": "i2.xlarge",
+      "LaunchConfig": "LocalStorage",
+      "VolumeCount": 1,
+      "VolumeSize": [
+        800
+      ]
+    }
+  },
+  "EBS": {
+    "m4.10xlarge": {
+      "InstanceType": "m4.10xlarge",
+      "LaunchConfig": "EBS20",
+      "VolumeCount": 20,
+      "VolumeSize": [
+        1000,
+        250
+      ]
+    },
+    "m4.4xlarge": {
+      "InstanceType": "m4.4xlarge",
+      "LaunchConfig": "EBS20",
+      "VolumeCount": 20,
+      "VolumeSize": [
+        1000,
+        250
+      ]
+    }
+  }
+}
+
+
+
+
+
+
+
+

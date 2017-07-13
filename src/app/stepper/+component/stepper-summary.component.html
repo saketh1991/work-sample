@@ -1,0 +1,5 @@
+<div flex layout-gt-xs="row" layout-align="start center" *ngFor="let label of labels; let i = index;">
+  <span flex="30" class="mat-subhead"><span hide-xs>{{label}}</span></span>
+  <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+  <span flex class="word-break" [ngClass]="{'tc-cyan-600': highlight}">{{values[i]}}</span>
+</div>

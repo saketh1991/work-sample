@@ -1,0 +1,56 @@
+{"HDD":{
+  "d2.2xlarge":{
+    "InstanceType":"d2.2xlarge",
+    "launchconfig":"localstorage",
+    "volumecount":6,
+    "volumesize":[2000]
+  }
+},
+  "d2.4xlarge": {
+    "isnatrancetype":"d2.4xlarge"
+    "launchconfig":"localstorage",
+    "volumecount":12,
+    "volumesize":[2000]
+
+  },
+
+     "d2.8xlarge":{
+       "instancetype":"d2.8xlarge"
+       "launchconfig":"localstorage",
+       "volumecount":24,
+       "volumesize":[2000]
+
+     },
+
+      "d2.xlarge":{
+        "instancetype":"d2.xlarge"
+        "launchconfig":"localstorage",
+        "volumecount":3,
+        "volumesize":[2000]
+      }
+
+
+},
+"SSD":{
+"i2.2xlarge":{
+        "instancetype":"i2.2xlarge",
+         "launchconfig":"localstorage"
+          "volumecount":2,
+        "volumesize":[800]
+
+},
+ "i2.4xlarge":{
+      "instancetype":"i2.4xlarge"
+      "launchconfig":"localstorage"
+       "volumecount":4
+    "volumesize":800
+
+"i2.xlarge": {
+"InstanceType": "i2.xlarge",
+"LaunchConfig": "LocalStorage",
+"VolumeCount": 1,
+"VolumeSize":[800]
+}
+
+},
+

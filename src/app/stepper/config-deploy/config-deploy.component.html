@@ -1,0 +1,278 @@
+<app-steps-layout title="Configure Deployment" backTo="Verify Applications" [backToLink]="['/dashboard/appverify']">
+  <app-plan-summary [plan]="plan"></app-plan-summary>
+  <div class="md-content" class="inset" layout="column" flex="100">
+    <md-card class="dashboard_content" flex="100">
+      <md-card-content class="md-padding" *ngIf="isLoading">
+        <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl">
+          <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+        </div>
+      </md-card-content>
+
+      <md-card-content id="config-deploy" *ngIf="!isLoading">
+        <h2 class="md-subhead"></h2>
+        <h4 class="md-body-1 tc-grey-500"></h4>
+
+        <td-steps tdStepTracker="config-deploy">
+          <td-step #step1 label="Region">
+            <ng-template td-step-label>
+              <span>Region</span>
+
+              <a id="region" md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id ='109');"
+                [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            
+            <div td-step-content>
+              <div layout="column" flex-gt-xs="35">
+                <md-select [(ngModel)]="region" placeholder="Region" required>
+                  <md-option [value]="undefined">Select region</md-option>
+                  <md-option *ngFor="let region of regions" [value]="region">{{region}}</md-option>
+                </md-select>
+              </div>
+            </div>
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent" id="regionContinue" (click)="continue(step1, step2)" [disabled]="!validateFields([region])" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+            <ng-template td-step-summary>
+              <app-stepper-summary [labels]="['Region']" [values]="[region]">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #step2 [disabled]="isStepPending(step1)" label="Virtual Private Cloud (VPC)">
+            <ng-template td-step-label>
+              <span> Virtual Private Cloud (VPC) </span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id ='110');"
+                [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <div td-step-content>
+              <div layout="column" flex-gt-xs="35">
+                <md-select [(ngModel)]="vpc" placeholder="VPC" required *ngIf="vpcs">
+                  <md-option [value]="undefined">Select VPC</md-option>
+                  <md-option *ngFor="let vpc of vpcs" [value]="vpc.vpc_id">{{vpc.vpc_name}} - {{vpc.cidr_block}}</md-option>
+                </md-select>
+              </div>
+            </div>
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent" id="vpcContinue" (click)="continue(step2, step3)" [disabled]="!validateFields([vpc])" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+            <ng-template td-step-summary>
+              <app-stepper-summary [labels]="['Virtual Private Cloud']" [values]="[getVpcLabel(vpc)]">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #step3 [disabled]="isStepPending(step2)" label="Availability Zone">
+            <ng-template td-step-label>
+              <span>Availability Zone</span>
+
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id ='111');"
+                [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <div td-step-content>
+              <div layout="column" flex-gt-xs="35">
+                <md-select [(ngModel)]="availabilityZone" placeholder="Availability Zone" required>
+                  <md-option [value]="undefined">Select availability zone</md-option>
+                  <md-option *ngFor="let zone of availabilityZones" [value]="zone">{{zone}}</md-option>
+                </md-select>
+              </div>
+            </div>
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent" id="availabilityZone" (click)="continue(step3, step4)" [disabled]="!validateFields([availabilityZone])"
+                  class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+            <ng-template td-step-summary>
+              <app-stepper-summary [labels]="['Availability Zone Selected']" [values]="[availabilityZone]">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #step4 [disabled]="isStepPending(step3)" label="Subnet">
+            <ng-template td-step-label>
+              <span>Subnet</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (click)="$event.stopPropagation()" md-tooltip=""
+                class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <div td-step-content>
+              <div layout="column" flex-gt-xs="35">
+                <div layout="column" flex-gt-xs="100">
+                  <md-radio-group [(ngModel)]="reuseSubnet" layout="row" class="push-bottom-sm" flex="none" (ngModelChange)="onChangeReuseOrCreateSubnet()">
+                    <md-radio-button class="md-primary pad-xs" [value]=true>Reuse existing subnet</md-radio-button>
+                    <md-radio-button class="md-primary pad-xs" [value]=false>Create new subnet</md-radio-button>
+                  </md-radio-group>
+                </div>
+
+                <div *ngIf="isReusingSubnet()" class="pad-top-md">
+                  <div layout="column" layout-margin flex-gt-xs="100">
+                    <md-select class="drop-down"
+                               [(ngModel)]="subnetId"
+                               placeholder="Subnet"
+                               required
+                               (ngModelChange)="onChangeReusedSubnet($event)">
+                      <md-option [value]="undefined">Select subnet</md-option>
+                      <md-option *ngFor="let subnet of existingSubnets" [value]="subnet.subnet_id">{{ subnet.subnet_name }} ({{ subnet.subnet_id }})</md-option>
+                    </md-select>
+                  </div>
+                </div>
+
+                <div *ngIf="!isReusingSubnet()">
+                  <div layout="column" layout-margin flex-gt-xs="100">
+                    <md-radio-group [(ngModel)]="availableCidrRange"
+                                    (ngModelChange)="onChangeCidrRange()"
+                                    layout="row"
+                                    class="push-bottom-sm"
+                                    flex="none">
+                      <md-radio-button class="md-primary pad-xs" [value]=0>Netmask</md-radio-button>
+                      <md-radio-button class="md-primary pad-xs" [value]=1>IP addresses</md-radio-button>
+                    </md-radio-group>
+
+                    <div *ngIf="isAvailableCidrRangeByNetmask" layout="column" layout-margin flex-gt-xs="100">
+                      <md-slider [(ngModel)]="netmask"
+                                  (ngModelChange)="onChangeNetmask()"
+                                  [min]="subnetConfig.minNetmask"
+                                  [max]="subnetConfig.maxNetmask"
+                                  name="netmask-slider"
+                                  step="1"
+                                  thumbLabel
+                                  tick-interval="1"
+                                  value="netmask">
+                      </md-slider>
+
+                      <md-input-container class="subnet-section-item">
+                        <input mdInput [ngModel]="netmask"
+                                        type="number"
+                                        placeholder="Netmask"
+                                        [min]="subnetConfig.minNetmask"
+                                        [max]="subnetConfig.maxNetmask"
+                                        disabled />
+                        <md-hint align="end" class="md-caption tc-grey-600">Min-Max: {{ subnetConfig.minNetmask }}-{{ subnetConfig.maxNetmask }}</md-hint>
+                      </md-input-container>
+
+                    </div>
+
+                    <div *ngIf="isAvailableCidrRangeByCount" layout="column" layout-margin flex-gt-xs="100">
+
+                      <md-input-container>
+                        <input mdInput #ipCountInput
+                                        [ngModel]="countOfIpAddresses"
+                                        (ngModelChange)="onChangeIpCount($event)"
+                                        type="number"
+                                        placeholder="Number of IP addresses needed"
+                                        [min]="subnetConfig.minIPAddresses"
+                                        [max]="subnetConfig.maxIPAddresses"
+                                        required />
+                        <md-hint>
+                          <span [hidden]="ipCountInput.pristine" class="tc-red-600">
+                            <span [hidden]="!ipCountInput.errors?.required">Value is required</span>
+                            <span [hidden]="!ipCountInput.errors?.pattern">Invalid Value not allowed</span>
+                            <span [hidden]="!ipCountInput.errors?.min">Min value not allowed</span>
+                            <span [hidden]="!ipCountInput.errors?.max">Max value not allowed</span>
+                          </span>
+                        </md-hint>
+                        <md-hint align="end" class="md-caption tc-grey-600">Min-Max: {{ subnetConfig.minIPAddresses }}-{{ subnetConfig.maxIPAddresses }}</md-hint>
+                      </md-input-container>
+
+                    </div>
+
+                    <md-progress-spinner *ngIf="isLoadingCidrs" mode="indeterminate"></md-progress-spinner>
+
+                    <div layout="column" layout-margin flex-gt-xs="100">
+                      <md-select *ngIf="!isLoadingCidrs"
+                                placeholder="CIDR"
+                                [ngModel]="subnetCidr"
+                                (ngModelChange)="onChangeCidr($event)"
+                                required
+                                class="subnet-section-item">
+                        <md-option [value]="undefined">Select CIDR</md-option>
+                        <md-option *ngFor="let cidr of availableCidrs" [value]="cidr.cidr">{{ cidr.cidr }} ({{ cidr.startCidr }} ... {{ cidr.endCidr }})</md-option>
+                      </md-select>
+
+                      <md-input-container class="subnet-section-item">
+                        <input mdInput [ngModel]="subnetCidr"
+                                        type="text"
+                                        placeholder="Selected CIDR"
+                                        disabled />
+                      </md-input-container>
+
+                      <app-input-field [value]="subnetName"
+                                       [pattern]="subnetConfig.subnetNamePattern"
+                                       [patternError]="subnetConfig.subnetNamePatternError"
+                                       type="text"
+                                       placeholder="Subnet Name"
+                                       (changed)="onChangeSubnetName($event)"
+                                       class="subnet-section-item">
+                      </app-input-field>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ng-template td-step-actions>
+              <div layout="row">
+                <button md-button color="accent" id="SubnetContiue" (click)="continue(step4, step5)" [disabled]="!validateSubnet()" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <app-stepper-summary *ngIf="!isReusingSubnet()" [labels]="['Subnet CIDR', 'Subnet Name']" [values]="[subnetCidr, subnetName]"></app-stepper-summary>
+              <app-stepper-summary *ngIf="isReusingSubnet() && selectedSubnet" [labels]="['Subnet Name']" [values]="[selectedSubnet.subnet_name]"></app-stepper-summary>
+            </ng-template>
+          </td-step>
+
+          <td-step #step5 [disabled]="isStepPending(step4)" label="SSH Pub Key">
+            <ng-template td-step-label>
+
+              <span>SSH Key Pair</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id ='115');"
+                [md-tooltip]=tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+            <div td-step-content>
+              <div layout="column" flex-gt-xs="35">
+                <md-select [(ngModel)]="securityKey" placeholder="Key Pair">
+                  <md-option [value]="undefined">Select Key Pair</md-option>
+                  <md-option *ngFor="let key of securityKeys" [value]="key">
+                    {{key}}
+                  </md-option>
+                </md-select>
+              </div>
+            </div>
+            <ng-template td-step-actions>
+              <button md-button color="primary" (click)="addNewKey()">ADD</button>
+              <div class="push-left-sm">
+                <button md-button color="accent" (click)="continue(step5)" id="securityKeyContinue" [disabled]="!validateFields([securityKey])" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+            <ng-template td-step-summary>
+              <app-stepper-summary [labels]="['SSH Key Selected']" [values]="[securityKey]">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+        </td-steps>
+      </md-card-content>
+      <md-divider></md-divider>
+      <md-card-actions layout="row" *ngIf="!isLoading">
+        <button md-raised-button color="accent" [disabled]="!canSave()" (click)="saveAndContinue()" class="text-upper">
+          {{saveButtonLabel}}
+        </button>
+      </md-card-actions>
+    </md-card>
+  </div>
+</app-steps-layout>

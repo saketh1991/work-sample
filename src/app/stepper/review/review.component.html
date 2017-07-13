@@ -1,0 +1,147 @@
+<td-layout-nav toolbarTitle="NEBULA" logo="assets:teradata">
+  <div toolbar-content layout="row" layout-align="end start" flex>
+    <app-toolbar></app-toolbar>
+  </div>
+
+  <td-layout-card-over *ngIf="isLoading()">
+    <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl">
+      <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+    </div>
+  </td-layout-card-over>
+
+  <td-layout-card-over *ngIf="!isLoading()">
+    <div toolbar-buttons layout="row" layout-align="start center" flex>
+      <md-card-title>
+        Review and Confirm Deployment
+      </md-card-title>
+
+      <span flex></span>
+
+      <div flex="none" class="push-right-sm">
+        <button md-icon-button [md-menu-trigger-for]="menu">
+          <md-icon class="tc-grey-500">more_vert</md-icon>
+        </button>
+        <md-menu x-position="before" #menu="mdMenu">
+          <button md-menu-item (click)="export()">
+            <md-icon class="tc-grey-500 pull-left-sm">file_download</md-icon>
+            Export
+          </button>
+        </md-menu>
+      </div>
+    </div>
+
+    <md-divider></md-divider>
+
+    <span flex-gt-xs></span>
+
+    <div layout="column" layout-align="start none" layout-padding flex-gt-xs>
+      <md-card-content flex-gt-xs>
+        <md-list>
+          <md-toolbar class="bgc-light-blue-800" flex-gt-sx *ngIf="plan">
+            <span class="tc-grey-50">Plan Name: {{plan.name}}</span>
+          </md-toolbar>
+
+          <div layout="column" layout-margin flex-gt-xs *ngIf="plan">
+            <app-stepper-summary class="pad-sm"
+              [labels]="['Plan Description', 'Storage Type', 'Node Count', 'Instance Type']"
+              [values]="[plan.description, plan.storageTypeName, plan.nodeCount, plan.instanceTypeName]"
+              highlight='true'>
+            </app-stepper-summary>
+
+            <div class="md-subhead pad-left-sm">Applications</div>
+
+            <div flex layout-gt-xs="row" layout-align="start center" *ngIf="plan && !plan.selectedIncludedApplications.length">
+              <span flex class="word-break" class="tc-cyan-600 pad-left-sm">No applications selected.</span>
+            </div>
+
+            <div flex layout-gt-xs="row" layout-align="start center" *ngFor="let application of plan.selectedIncludedApplications">
+              <span flex class="word-break" class="tc-cyan-600 pad-left-sm">{{ application.name }}</span>
+            </div>
+
+            <div class="md-subhead pad-left-sm">Selected Additional Features</div>
+
+            <div flex layout-gt-xs="row" layout-align="start center" *ngIf="plan && !plan.selectedExtraApplications.length">
+              <span flex class="word-break" class="tc-cyan-600 pad-left-sm">No applications selected.</span>
+            </div>
+
+            <div flex layout-gt-xs="row" layout-align="start center" *ngFor="let application of plan.selectedExtraApplications">
+              <span flex class="word-break" class="tc-cyan-600 pad-left-sm">{{ application.name }}</span>
+            </div>
+          </div>
+
+          <md-toolbar class="bgc-light-blue-800" flex>
+            <span class="tc-grey-50">Deployment Configuration</span>
+            <span flex></span>
+            <button md-icon-button md-tooltip="Modify"
+                    class="tc-blue-grey-50"
+                    [routerLink]="['/dashboard/tddbconfig']"
+                    [queryParams]="{edit: true}">
+              <md-icon>mode_edit</md-icon>
+            </button>
+          </md-toolbar>
+
+          <div layout="column" layout-margin flex-gt-xs *ngIf="!deployConfig">
+            <div flex layout-gt-xs="row" layout-align="start center">
+              <span flex class="word-break tc-cyan-600 pad-left-sm">No data available.</span>
+            </div>
+          </div>
+
+          <div layout="column" layout-margin flex-gt-xs *ngIf="deployConfig">
+            <app-stepper-summary *ngIf="!isReusingSubnet()" class="pad-sm"
+              [labels]="['Region', 'Virtual Private Cloud', 'Availability Zone Selected', 'CIDR Subnet', 'Subnet Name', 'SSH Key Pair Selected']"
+              [values]="[deployConfig.region, deployConfig.vpc, deployConfig.availability_zone, deployConfig.cidr, deployConfig.public_subnet, deployConfig.public_key]"
+              highlight='true'>
+            </app-stepper-summary>
+            <app-stepper-summary *ngIf="isReusingSubnet()" class="pad-sm"
+              [labels]="['Region', 'Virtual Private Cloud', 'Availability Zone Selected', 'Subnet Name', 'SSH Key Pair Selected']"
+              [values]="[deployConfig.region, deployConfig.vpc, deployConfig.availability_zone, deployConfig.reused_subnet.subnet_name, deployConfig.public_key]"
+              highlight='true'>
+            </app-stepper-summary>
+          </div>
+
+          <md-toolbar class="bgc-light-blue-800" flex>
+            <span class="tc-grey-50">Application Configuration</span>
+            <span flex></span>
+            <button md-icon-button md-tooltip="Modify"
+                    class="tc-blue-grey-50"
+                    [routerLink]="['/dashboard/appconfig']"
+                    [queryParams]="{edit: true}">
+              <md-icon>mode_edit</md-icon>
+            </button>
+          </md-toolbar>
+
+          <div layout="column" layout-margin flex-gt-xs *ngIf="!appsConfig.dbConfig && !appsConfig.serverManagementConfig">
+            <div flex layout-gt-xs="row" layout-align="start center">
+              <span flex class="word-break tc-cyan-600 pad-left-sm">No data available.</span>
+            </div>
+          </div>
+
+          <div layout="column" layout-margin flex-gt-xs *ngIf="appsConfig">
+            <app-stepper-summary class="pad-sm" *ngIf="appsConfig.dbConfig"
+              [labels]="['Database Nickname', 'Database System Name', 'Kanji Support', 'Time Zone Selected']"
+              [values]="[appsConfig.dbConfig.nickname, appsConfig.dbConfig.systemName, appsConfig.dbConfig.kanjiSupport, appsConfig.dbConfig.timezone]"
+              highlight='true'>
+            </app-stepper-summary>
+
+            <app-stepper-summary class="pad-sm" *ngIf="appsConfig.serverManagementConfig && appsConfig.serverManagementConfig.siteId"
+              [labels]="['Site ID']"
+              [values]="[appsConfig.serverManagementConfig.siteId]"
+              highlight='true'>
+            </app-stepper-summary>
+          </div>
+        </md-list>
+      </md-card-content>
+    </div>
+
+    <md-divider></md-divider>
+
+    <div layout-gt-xs="row" layout-margin layout-padding>
+      <button md-raised-button color="accent" class="text-upper"
+              [disabled]="!plan || !deployConfig || !appsConfig.dbConfig"
+              [ngClass]="deploy"
+              (click)="deploy()">
+        Confirm And Deploy
+      </button>
+    </div>
+  </td-layout-card-over>
+</td-layout-nav>

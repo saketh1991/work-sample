@@ -1,0 +1,24 @@
+{
+
+"verifyapps": [
+  {
+    "Name of UI Element": "Verify Applications",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  },
+  {
+    "Name of UI Element": "Cloud Credentials",
+    "Tooltip": "See ",
+    "Hover Text": null,
+    "Comments": "https://aws.amazon.com/documentation/ec2/"
+  },
+  {
+    "Name of UI Element": "License Verification",
+    "Tooltip": "Validates license for selected Teradata software",
+    "Hover Text": null,
+    "Comments": "Q: Should this verification be validating only those applications that are available for additional cost, e.g., Data Mover, Viewpoint (Multiple System)? If it verifies all licenses, when exactly are the included licenses purchased? "
+  },
+
+]
+}

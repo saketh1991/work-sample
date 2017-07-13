@@ -1,0 +1,209 @@
+ {
+  "builplan":
+  [{
+    "Name of UI Element": "Build Plan",
+    "id": "101",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Plan Name ",
+    "id": "102",
+    "Tooltip": "Maximum 24 characters. Identifies the plan after export from a Nebula environment.",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Plan Description",
+    "id": "103",
+    "Tooltip": "Plan name maximum 24 characters. Plan description Maximum 140 characters",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Database Storage and Compute",
+    "id": "104",
+    "Tooltip": "For more information on storage and compute options, see https://aws.docs.teradata.com/.",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Additional Applications (Included with Teradata Database)",
+    "id": "105",
+    "Tooltip": "Included at no additional cost",
+    "Hover Text": null,
+    "Comments": "Use tooltip for each sw checkbox."
+  }, {
+    "Name of UI Element": "Additonal Applications (Licensed separately)",
+    "id": "106",
+    "Tooltip": "Must be purchased separately before deployment",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Cloud Credentials",
+    "id": "107",
+    "Tooltip": " See 'Sign Up for AWS' under Setting Up in the Amazon User Guide for Linux Instances",
+    "Hover Text": null,
+    "Comments": "https://aws.amazon.com/documentation/ec2/"
+  }, {
+    "Name of UI Element": "License Verification",
+    "id": "108",
+    "Tooltip": "Validates license for selected Teradata software",
+    "Hover Text": null,
+    "Comments": "Q: Should this verification be validating only those applications that are available for additional cost, e.g., Data Mover, Viewpoint (Multiple System)? If it verifies all licenses, when exactly are the included licenses purchased? "
+  }, {
+    "Name of UI Element": "Database <editionName>",
+    "id": "133",
+    "Tooltip": "Full-featured data warehouse software powering analytics",
+    "Hover Text": null,
+    "Comments": "new tootip"
+  }, {
+    "Name of UI Element": "Viewpoint (Single System)",
+    "id": "132",
+    "Tooltip": "Provides web-based, easy-to-use, management portal for Teradata performance and health management.",
+    "Hover Text": null,
+    "Comments": "new tootip \nNote: System, not Edition"
+  }, {
+    "Name of UI Element": "Server Management",
+    "id": "131",
+    "Tooltip": "Monitors the instance and generates alerts for events that affect the operation of the system.",
+    "Hover Text": null,
+    "Comments": "new tootip"
+  }, {
+    "Name of UI Element": "Ecosystem Manager",
+    "id": "130",
+    "Tooltip": "Allows effective management of your data warehouse environment.",
+    "Hover Text": null,
+    "Comments": "new tootip"
+  }, {
+    "Name of UI Element": "Data Mover",
+    "id": "129",
+    "Tooltip": "Leverages all the established data loading protocols and technologies to meet your data movement needs.",
+    "Hover Text": null,
+    "Comments": "new tootip"
+  }, {
+    "Name of UI Element": "Verify Applications",
+    "id": "128",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Configure Deployment",
+    "id": "10",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Region",
+    "id": "109",
+    "Tooltip": "AWS EC2 is hosted in worldwide locations composed of regions. Select a region in which to launch the system.",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Virtual Private Cloud (VPC)",
+    "id": "110",
+    "Tooltip": "Allows you to provision a separate, isolated section of the AWS cloud where you can launch AWS resources in a virtual network that you define.",
+    "Hover Text": null,
+    "Comments": "The Ecosystem template creates the VPC if desired. \nImportant: Will Nebula offer the option of creating a VPC for user, or is this a pre-requisite?"
+  }, {
+    "Name of UI Element": "Availability Zone",
+    "id": "111",
+    "Tooltip": "Isolated location in a geographic region",
+    "Hover Text": "Geographic regions",
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Subnet",
+    "id": "112",
+    "Tooltip": "?",
+    "Hover Text": null,
+    "Comments": "This should not be needed for an existing VPC. Will there be an option to create a new VPC?"
+  }, {
+    "Name of UI Element": "Subnet CIDR",
+    "id": "113",
+    "Tooltip": "?",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Subnet Name",
+    "id": "114",
+    "Tooltip": "?",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "SSH Key Pair",
+    "id": "115",
+    "Tooltip": "Enter or select the key pair to ssh into for the instances",
+    "Hover Text": null,
+    "Comments": "Does the ADD button create SSH credentials for the instance? Fields are for keyname and the other one for SSH Key Pair. Can the user put a key pair into one field?"
+  }, {
+    "Name of UI Element": "Configure Applications",
+    "id": "116",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Database",
+    "id": "117",
+    "Tooltip": "Full-feature data warehouse software powering analytics.",
+    "Hover Text": null,
+    "Comments": "Should be Teradata Database."
+  }, {
+    "Name of UI Element": "Nickname",
+    "id": "118",
+    "Tooltip": "Used to monitor Teradata instances in Teradata Viewpoint",
+    "Hover Text": null,
+    "Comments": "How many characters? What is the specification for entering a nickname?"
+  }, {
+    "Name of UI Element": "System Name",
+    "id": "119",
+    "Tooltip": "Create a Teradata Database system name",
+    "Hover Text": null,
+    "Comments": "This auto-populates with the initial login info?"
+  }, {
+    "Name of UI Element": "Database Password",
+    "id": "120",
+    "Tooltip": "Create a Teradata Database password",
+    "Hover Text": null,
+    "Comments": "This auto-populates with the initial login info?"
+  }, {
+    "Name of UI Element": "Kanji Support",
+    "id": "121",
+    "Tooltip": "Optimizes the hashing algorithm to spread data across all AMPs when using Kanji characters for primary indexes.",
+    "Hover Text": "Japanese Support",
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Time Zone",
+    "id": "122",
+    "Tooltip": "Operating system time zone of the database system. The default is the timezone of the AWS region.",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Viewpoint",
+    "id": "123",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": "One word: "
+  }, {
+    "Name of UI Element": "Server Management",
+    "id": "124",
+    "Tooltip": "",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Site ID",
+    "id": "125",
+    "Tooltip": "Unique string that identifies an installation of Teradata Database. Received in a welcome email after registration; required to receive Teradata support.",
+    "Hover Text": null,
+    "Comments": ""
+  }, {
+    "Name of UI Element": "Server Management REST Password",
+    "id": "126",
+    "Tooltip": "6 to 32 alphanumeric characters",
+    "Hover Text": null,
+    "Comments": "Server Management REST Password not Server Manager"
+  }, {
+    "Name of UI Element": "Server Management Password",
+    "id": "127",
+    "Tooltip": "6 to 32 alphanumeric characters",
+    "Hover Text": null,
+    "Comments": "Server Management Password not Server Manager"
+  }]
+
+ }

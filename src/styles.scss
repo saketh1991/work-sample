@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+@import "theme";
+
+// You can add global styles to this file that will cascade like normal CSS
+
+// Active icon color in list nav
+md-nav-list {
+  [md-list-item].active {
+    md-icon[md-list-avatar] {
+      /*noinspection CssInvalidFunction*/
+      background-color: mat-color($accent);
+      /*noinspection CssInvalidFunction*/
+      color: mat-color($accent, default-contrast)
+    }
+    md-icon[md-list-icon] {
+      /*noinspection CssInvalidFunction*/
+      color: mat-color($accent);
+    }
+  }
+}
+
+// Href line height wasn't right for md-icon-button
+a[md-icon-button] {
+  line-height: 36px;
+}
+
+// Stretch tab labels until there is an attribute for it
+.mat-tab-label {
+  flex-grow: 1;
+}
+
+// Larger button
+[md-button],
+[md-raised-button] {
+  &.mat-button-lg {
+    font-size: 18px;
+    line-height: 42px;
+    padding: 0 22px;
+  }
+}
+.word-break {
+     word-break: break-word;
+}
+
+:focus {
+  outline: none;
+}

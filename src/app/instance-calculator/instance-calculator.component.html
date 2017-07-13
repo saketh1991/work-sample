@@ -1,0 +1,94 @@
+<div flex-gt-xs="30" layout-align="column">
+
+  <md-card class="fixed config_info " [hidden]="!appname && appplan=='none'">
+
+    <md-toolbar class="bgc-light-blue-800">
+      <span class="tc-grey-50">{{appname ? appname : 'Plan Name'}}</span>
+    </md-toolbar>
+
+
+    <md-card-content [hidden]="appplan=='none'">
+      <md-list>
+
+        <h3 class="md-subhead tc-grey-700 pull-top-xs">Database Edition</h3>
+        <h2 class=" md-title pull-top-xs tc-cyan-600">{{appplan}}</h2>
+
+
+        <h2 class="md-subhead tc-cyan-600">{{appvolume}} Nodes of {{selected_instance}}</h2>
+
+        <md-list-item>
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">local_laundry_service</md-icon>
+          <h4 class="md-body-1">Storage: {{storage_Type}} {{appstorage}} {{total_storage}} TB</h4>
+
+        </md-list-item>
+
+
+        <md-list-item>
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">memory</md-icon>
+          <h4  class="md-body-1 push-left-xs" >CPU: {{total_vcore}} vCPU</h4>
+        </md-list-item>
+
+        <md-list-item>
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">storage</md-icon>
+          <h4 class="md-body-1 push-left-xs" >Memory: {{total_memory}} GiB</h4>
+        </md-list-item>
+
+ <!--<div *ngIf=" appstorage == 'EBS'">-->
+<md-list-item>
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">settings_ethernet</md-icon>
+          <h4 class="md-body-1 push-left-xs" >Network Performance: {{network_performance}}</h4>
+        </md-list-item>
+        <!--</div>-->
+
+        <md-list-item *ngIf="storage_Type == 'Network'">
+          <md-icon md-list-icon class="pull-left-lg tc-blue-grey-400">compare_arrow</md-icon>
+          <h4 class="md-body-1 push-left-xs">Storage Throughput: {{throughput}} MB/s</h4>
+        </md-list-item>
+        <!--</div>-->
+      </md-list>
+    </md-card-content>
+
+
+
+
+
+    <md-toolbar class="bgc-light-blue-800" flex>
+      <span class="tc-grey-50">Additional Applications</span>
+    </md-toolbar>
+    <md-card-subtitle >
+      <h3 class="md-subhead pull-bottom-lg">Included with Teradata Database</h3>
+    </md-card-subtitle>
+
+    <md-card-content>
+
+      <md-list-item *ngFor="let a of applications">
+
+        <div class="tc-cyan-600 md-body-1" *ngIf="a.checked == true" pad>
+          {{ a.name }}
+        </div>
+
+
+      </md-list-item>
+
+    </md-card-content>
+    <md-divider></md-divider>
+
+    <md-card-subtitle>
+      <h3 class="md-subhead pull-bottom-lg">Licensed Separately</h3>
+    </md-card-subtitle>
+
+
+    <md-card-content>
+
+      <md-list-item *ngFor="let a of additional_features">
+
+        <div class="tc-cyan-600 md-body-1" *ngIf="a.checked == true">
+          {{ a.name }}
+        </div>
+
+      </md-list-item>
+
+    </md-card-content>
+
+  </md-card>
+</div>

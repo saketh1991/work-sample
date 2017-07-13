@@ -1,0 +1,115 @@
+<app-steps-layout title="Verify Applications" backTo="Build Plan" [backToLink]="['/dashboard/stepper']" #list>
+  <app-plan-summary [plan]="plan"></app-plan-summary>
+  <div class="md-content" class="inset" layout="column" flex="100">
+    <md-card class="dashboard_content" flex="100">
+      <md-card-content>
+        <h2 class="md-subhead"></h2>
+        <h4 class="md-body-1 tc-grey-500"></h4>
+
+        <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl" *ngIf="isLoading">
+          <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+        </div>
+
+        <td-steps id="verify-apps" tdStepTracker="verify-apps" *ngIf="!isLoading">
+          <td-step #step1 label="Cloud Credentials">
+            <ng-template td-step-label>
+              <span>Cloud Credentials</span>
+              <a md-icon-button tooltip-position="after" (click)="$event.stopPropagation()" (mouseover)="stopPropagation(id='107');" [md-tooltip] = tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div layout="row" layout-align="start center" flex-gt-xs>
+              <md-select flex="30" [(ngModel)]="credentialName" *ngIf="credentials?.length">
+                <md-option [value]="null" selected>Select credential</md-option>
+                <md-option *ngFor="let c of credentials" [value]="c?.name">{{c?.name}}</md-option>
+              </md-select>
+
+              <div *ngIf="!credentials?.length">
+                You have no credentials.
+              </div>
+            </div>
+
+            <ng-template td-step-actions>
+              <button md-button class="text-upper" color="primary" (click)="addNewCredential()">Add</button>
+
+              <div class="push-left-sm">
+                <button md-button color="accent" (click)="continueStep1()" [disabled]="!canContinue()" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <div flex layout-gt-xs="row" layout-align="start center">
+                <span flex="30" class="md-subhead"><span hide-xs>Credential</span></span>
+                <span flex="5" hide-xs><md-icon class="tc-grey-500">chevron_right</md-icon></span>
+                <span flex class="word-break">{{credentialName}}</span>
+              </div>
+            </ng-template>
+          </td-step>
+
+          <td-step #step2 label="Viewpoint" [disabled]="isStepPending(step1)" (activated)="verifyLicenses()">
+            <ng-template td-step-label>
+              <span>License Verification</span>
+              <a md-icon-button tooltip-position="after"(click)="$event.stopPropagation()"   (mouseover)="stopPropagation(id='108');" [md-tooltip]= tooltip_display class="tc-grey-400">
+                <md-icon class="pull-left-lg pull-right-lg tc-blue-grey-100">help_outline</md-icon>
+              </a>
+            </ng-template>
+
+            <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl" *ngIf="isVerifying">
+              <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+            </div>
+
+            <md-list flex-gt-sm id="licenses" *ngIf="!isVerifying">
+              <md-list-item *ngFor="let license of licenses">
+                <md-toolbar>
+                  <a *ngIf="license.status == 'Verified'">
+                    <md-icon class="tc-light-green-600 pad">check_circle</md-icon>
+                  </a>
+
+                  <a *ngIf="license.status !== 'Verified'">
+                    <md-icon class="tc-deep-orange-700 pad">error</md-icon>
+                  </a>
+
+                  <span class="md-subhead">{{license.name}}</span>
+
+                  <span flex-gt-xs></span>
+
+                  <a href="{{license.url}}" target="_blank" *ngIf="license.status !== 'Verified'" >
+                    <button md-button color="primary" class="text-upper">Subscribe In Marketplace</button>
+                  </a>
+
+                  <a md-icon-button tooltip-position="after" md-tooltip="Some Tooltip goes here" class="tc-grey-400" >
+                    <md-icon class="tc-blue-grey-100 ">help_outline</md-icon>
+                  </a>
+                </md-toolbar>
+              </md-list-item>
+            </md-list>
+
+            <ng-template td-step-actions *ngIf="!isVerifying">
+              <button md-button class="text-upper" color="primary" (click)="reverify()" *ngIf="licenses?.length && showReverify">Reverify</button>
+
+              <div class="push-left-sm">
+                <button md-button color="accent" (click)="continueStep2()" [disabled]="!canContinue()" class="text-upper">Continue</button>
+              </div>
+            </ng-template>
+
+            <ng-template td-step-summary>
+              <div layout="row" layout-align="center center" layout-padding flex class="will-load pad-xl" *ngIf="isVerifying">
+                <md-progress-spinner mode="indeterminate"></md-progress-spinner>
+              </div>
+
+              <app-stepper-summary [labels]="licenseNames" [values]="licenseStatuses" *ngIf="!isVerifying">
+              </app-stepper-summary>
+            </ng-template>
+          </td-step>
+        </td-steps>
+      </md-card-content>
+
+      <md-divider></md-divider>
+
+      <md-card-actions layout="row" *ngIf="!isLoading">
+        <button md-raised-button color="accent" [disabled]="!canContinue()" (click)="saveAndContinue()" class="text-upper">Save and Continue</button>
+      </md-card-actions>
+    </md-card>
+  </div>
+</app-steps-layout>

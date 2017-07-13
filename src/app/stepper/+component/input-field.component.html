@@ -1,0 +1,50 @@
+<form [formGroup]="form" layout="column">
+  <md-input-container>
+    <input mdInput
+            class="appname"
+            name="value"
+            formControlName="value"
+            [type]="type"
+            [placeholder]="placeholder"
+            [minlength]="minLength"
+            [maxlength]="maxLength"
+            [pattern]="pattern"
+            required
+            flex="100" />
+
+    <md-hint align="start" *ngIf="form.controls.value.dirty && !form.controls.value.valid">
+      <span class="tc-red-600" *ngIf="form.controls.value.errors?.required">
+        is required
+      </span>
+
+      <span class="tc-red-600" *ngIf="form.controls.value.errors?.minlength">
+        is too short (minimum is {{minlength}} characters)
+      </span>
+
+      <span class="tc-red-600" *ngIf="form.controls.value.errors?.maxlength">
+        is too long (maximum is {{maxlength}} characters)
+      </span>
+
+      <span class="tc-red-600" *ngIf="form.controls.value.errors?.pattern">
+        {{patternError}}
+      </span>
+    </md-hint>
+  </md-input-container>
+
+  <md-input-container *ngIf="isVerificationRequired">
+    <input mdInput
+            class="appname"
+            placeholder="Verify {{placeholder}}"
+            name="verification"
+            formControlName="verification"
+            [type]="type"
+            required
+            flex="100" />
+
+    <md-hint align="start" *ngIf="(form.controls.value.dirty || form.controls.verification.dirty) && !verified">
+      <span class="tc-red-600">
+        passwords don't match
+      </span>
+    </md-hint>
+  </md-input-container>
+</form>

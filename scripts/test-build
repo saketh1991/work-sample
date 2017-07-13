@@ -1,0 +1,9 @@
+#!/bin/bash
+echo 'Running unit tests'
+ng test --code-coverage --single-run
+
+echo 'Testing standard build'
+ng build
+
+echo 'Testing aot build'
+ng build --aot
